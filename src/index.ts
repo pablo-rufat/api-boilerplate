@@ -1,18 +1,37 @@
-import express from "express";
-import * as bodyParser from "body-parser";
+import { app, routes } from "../config/express";
 import * as jwt from "jsonwebtoken";
-import { key } from "../config/config";
-
-const app = express();
-
-app.set('key', key);
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.send('Inicio');
 });
 
+app.post('/login', (req, res) => {
+    if(req.body.user === "pablo" && req.body.pass === "pablo") {
+        const payload = {
+            check:  true,
+        };
+        const token = jwt.sign(payload, app.get('key'), {
+            expiresIn: 1440,
+        });
+        res.json({
+            message: 'Logged in',
+            token,
+        });
+    } else {
+        res.json({ message: "Invalid user or password"})
+    }
+});
+
+app.get('/data', routes, (req, res) => {
+    const data = [
+        { id: 1, nombre: "Asfo" },
+        { id: 2, nombre: "Denisse" },
+        { id: 3, nombre: "Carlos" }
+    ];
+
+    res.json(data);
+});
+
 app.listen(3000,()=>{
-    console.log('Servidor iniciado en el puerto 3000')
+    console.log('Server running at 3000')
 });
