@@ -9,8 +9,9 @@
     "prestart": "npm run build",
     "start": "node .",
     "postgres:start": "docker run -d -p 5432:5432 --name postgres -e POSTGRES_HOST_AUTH_METHOD=trust postgres:11-alpine",
-    "database:create": "docker exec postgres psql -U postgres postgres -c \"CREATE DATABASE readtome\"",
-    "dev": "npm run postgres:start && timeout 5 && npm run database:create && ts-node-dev src/index.ts",
+    "database:create_dev": "docker exec postgres psql -U postgres postgres -c \"CREATE DATABASE readtome\"",
+    "database:create_prod": "docker exec postgres psql -U postgres postgres -c \"CREATE DATABASE $(grep TYPEORM_DATABASE .env | cut -d= -f 2)\"",
+    "dev": "npm run postgres:start && timeout 3 && npm run database:create_dev && ts-node-dev -r dotenv/config src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

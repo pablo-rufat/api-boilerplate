@@ -1,7 +1,3 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
 export const env = new Proxy(process.env, {
   get: (env, prop) => {
     if (!(prop in env)) {
